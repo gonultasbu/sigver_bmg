@@ -1,3 +1,5 @@
+Forked for ITU CE 2019 Senior Design Project, SVM implementation is to be made in order to fully implement the idea presented in the paper. Bear in mind that the datasets are changed and extended.
+
 # Learned representation for Offline Handwritten Signature Verification
 
 This repository contains the code and instructions to use the trained CNN models described in [1] to extract features for Offline Handwritten Signatures. 
