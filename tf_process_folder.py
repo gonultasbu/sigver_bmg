@@ -16,6 +16,7 @@ from scipy.misc import imread
 from preprocess.normalize import preprocess_signature
 import tf_signet
 from tf_cnn_model import TF_CNNModel
+import tensorflow as tf
 import numpy as np
 import sys
 import os
@@ -49,11 +50,13 @@ files = os.listdir(signatures_path)
 for f in files:
     # Load and pre-process the signature
     filename = os.path.join(signatures_path, f)
-    original = imread(filename, flatten=1)
+    original = imread(filename, flatten=True)
     processed = preprocess_signature(original, canvas_size)
 
     # Use the CNN to extract features
-    feature_vector = model.get_feature_vector(processed)
+    sess = tf.Session()
+    sess.run(tf.global_variables_initializer())
+    feature_vector = model.get_feature_vector(sess,processed)
 
     # Save in the matlab format
     save_filename = os.path.join(save_path, os.path.splitext(f)[0] + '.mat')
