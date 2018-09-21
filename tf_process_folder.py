@@ -14,8 +14,8 @@
 """
 from scipy.misc import imread
 from preprocess.normalize import preprocess_signature
-import signet
-from cnn_model import CNNModel
+import tf_signet
+from tf_cnn_model import TF_CNNModel
 import numpy as np
 import sys
 import os
@@ -40,7 +40,7 @@ print('Using canvas size: %s' % (canvas_size,))
 
 # Load the model
 model_weight_path = 'models/signet.pkl'
-model = CNNModel(signet, model_weight_path)
+model = TF_CNNModel(tf_signet, model_weight_path)
 
 files = os.listdir(signatures_path)
 
