@@ -27,15 +27,15 @@ if len(sys.argv) not in [4,6]:
           '<model_path> [canvas_size]')
     exit(1)
 
+#Let's fix the code below later.
 signatures_path = sys.argv[1]
 save_path = sys.argv[2]
 model_path = sys.argv[3]
 if len(sys.argv) == 4:
-    canvas_size = (952, 1360)  # Maximum signature size
+    canvas_size = (1338, 2973)  # Maximum signature size
 else:
     canvas_size = (int(sys.argv[4]), int(sys.argv[5]))
 
-print('Processing images from folder "%s" and saving to folder "%s"' % (signatures_path, save_path))
 print('Using model %s' % model_path)
 print('Using canvas size: %s' % (canvas_size,))
 
@@ -43,21 +43,33 @@ print('Using canvas size: %s' % (canvas_size,))
 model_weight_path = 'models/signet.pkl'
 model = TF_CNNModel(tf_signet, model_weight_path)
 
-files = os.listdir(signatures_path)
-
 # Note: it there is a large number of signatures to process, it is faster to
 # process them in batches (i.e. use "get_feature_vector_multiple")
-for f in files:
+
+for root, dirs, filenames in os.walk(signatures_path, topdown=False):
     # Load and pre-process the signature
-    filename = os.path.join(signatures_path, f)
-    original = imread(filename, flatten=True)
-    processed = preprocess_signature(original, canvas_size)
+    print ("Working on " + (root))
+    for file in filenames:
+        if (file.endswith(".jpg")):
+            full_file_name=os.path.join(root, file)
+            original = imread(full_file_name, flatten=True)
+            processed = preprocess_signature(original, canvas_size)
 
-    # Use the CNN to extract features
-    sess = tf.Session()
-    sess.run(tf.global_variables_initializer())
-    feature_vector = model.get_feature_vector(sess,processed)
+            # Use the CNN to extract features
+            sess = tf.Session()
+            sess.run(tf.global_variables_initializer())
+            feature_vector = model.get_feature_vector(sess,processed)
 
-    # Save in the matlab format
-    save_filename = os.path.join(save_path, os.path.splitext(f)[0] + '.mat')
-    scipy.io.savemat(save_filename, {'feature_vector':feature_vector})
+            # Save in the matlab format
+            feature_save_folder_name=os.path.join(root,"extracted_features")
+
+            # Create new folder if it does not already exist
+            try:
+                os.makedirs(feature_save_folder_name)
+            except:
+                pass
+
+            save_filename = os.path.join(feature_save_folder_name, os.path.splitext(file)[0] + '.mat')
+            scipy.io.savemat(save_filename, {'feature_vector':feature_vector})
+        else:
+            pass

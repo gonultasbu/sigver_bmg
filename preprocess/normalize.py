@@ -51,9 +51,10 @@ def normalize_image(img, size=(840, 1360)):
 
     # Make sure the new image does not go off bounds
     # Case 1: image larger than required (height):  Crop.
-    # Emit a warning since we don't want this for the signatures in the WD dataset (OK for feature wi)
+    # Emit a warning since we don't want this for the signatures in the WD dataset (OK for feature wi) OVERRIDE: Quit the program because it is not wanted
     if img_r > max_r:
         print ('Warning: cropping image. The signature should be smaller than the canvas size')
+        quit()
         r_start = 0
         difference = img_r - max_r
         crop_start = difference // 2
@@ -69,7 +70,8 @@ def normalize_image(img, size=(840, 1360)):
 
     # Case 2: image larger than required (width). Crop.
     if img_c > max_c:
-        print ('Warning: cropping image. The signature should be smaller than the canvas size')
+        print ('Warning: cropping image. The signature should be smaller than the canvas size') #OVERRIDE: Quit the program because it is not wanted
+        quit()
         c_start = 0
         difference = img_c - max_c
         crop_start = difference // 2
