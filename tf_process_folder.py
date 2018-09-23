@@ -22,12 +22,12 @@ import sys
 import os
 import scipy.io
 
-if len(sys.argv) not in [4,6]:
+if len(sys.argv) not in [4, 6]:
     print('Usage: python process_folder.py <signatures_path> <save_path> '
           '<model_path> [canvas_size]')
     exit(1)
 
-#Let's fix the code below later.
+# Let's fix the code below later.
 signatures_path = sys.argv[1]
 save_path = sys.argv[2]
 model_path = sys.argv[3]
@@ -42,34 +42,58 @@ print('Using canvas size: %s' % (canvas_size,))
 # Load the model
 model_weight_path = 'models/signet.pkl'
 model = TF_CNNModel(tf_signet, model_weight_path)
-
-# Note: it there is a large number of signatures to process, it is faster to
-# process them in batches (i.e. use "get_feature_vector_multiple")
-
+person_counter=0
 for root, dirs, filenames in os.walk(signatures_path, topdown=False):
-    # Load and pre-process the signature
+
+    #Only work in directories ending with numbers.
+    if not root[-1].isdigit():
+        continue
+
+    # Go to a directory and collect image names in a list.
+    image_list = list()
     print ("Working on " + (root))
+    #image_root=root
     for file in filenames:
         if (file.endswith(".jpg")):
-            full_file_name=os.path.join(root, file)
-            original = imread(full_file_name, flatten=True)
-            processed = preprocess_signature(original, canvas_size)
+            image_list.append(file)
 
-            # Use the CNN to extract features
-            sess = tf.Session()
-            sess.run(tf.global_variables_initializer())
-            feature_vector = model.get_feature_vector(sess,processed)
+    #Extend the image names to full directory names
+    full_file_name_list = [root + "/" + image for image in image_list]
 
-            # Save in the matlab format
-            feature_save_folder_name=os.path.join(root,"extracted_features")
+    for full_file_name in full_file_name_list:
 
-            # Create new folder if it does not already exist
-            try:
-                os.makedirs(feature_save_folder_name)
-            except:
-                pass
-
-            save_filename = os.path.join(feature_save_folder_name, os.path.splitext(file)[0] + '.mat')
-            scipy.io.savemat(save_filename, {'feature_vector':feature_vector})
+        if (full_file_name_list.index(full_file_name)==0):
+            # Colors are flattened into grayscale layer
+            image_ndarray = np.expand_dims(
+                preprocess_signature(imread(full_file_name, flatten=True),canvas_size),axis=0)
         else:
-            pass
+            image_ndarray = np.append(arr=image_ndarray, values=
+                np.expand_dims(preprocess_signature(imread(full_file_name, flatten=True), canvas_size), axis=0), axis=0)
+
+
+    #original_list = [imread(full_file_name, flatten=True) for full_file_name in full_file_name_list]
+    #processed_list = [preprocess_signature(original, canvas_size) for original in original_list]
+
+    # Note: it there is a large number of signatures to process, it is faster to
+    # process them in batches (i.e. use "get_feature_vector_multiple")
+    # Use the CNN to extract features
+    sess = tf.Session()
+    sess.run(tf.global_variables_initializer())
+    feature_vector = model.get_feature_vector_multiple(sess, image_ndarray)
+
+    feature_save_folder_name = os.path.join(root, "extracted_features")
+    # Create new folder if it does not already exist
+    try:
+        os.makedirs(feature_save_folder_name)
+    except:
+        pass
+
+    #Save in the MATLAB format
+    #name needs to be written according to list above
+    person_counter+=1
+    print str(person_counter) + " people are processed!"
+    for iterator_1 in range (0,feature_vector.shape[0]):
+        save_filename = os.path.join(feature_save_folder_name, os.path.splitext(image_list[iterator_1])[0] + '.mat')
+        scipy.io.savemat(save_filename, {'feature_vector': feature_vector[iterator_1,:]})
+else:
+    pass

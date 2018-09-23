@@ -25,7 +25,7 @@ class TF_CNNModel:
         self.img_size = model_params['img_size']
 
         net_input_size = (None, self.input_size[0], self.input_size[1], 1)
-        self.x_input = tf.placeholder(tf.float32, net_input_size)
+        self.x_input = tf.placeholder(dtype=tf.float32, shape=net_input_size)
         self.model = model_factory.build_architecture(self.x_input,
                                                       model_params['params'])
     
@@ -64,6 +64,6 @@ class TF_CNNModel:
         input = np.expand_dims(images, axis=3)
 
 
-        # Perform forward propagation until the desired layer
+        # Perform forward propagation until the desired layer, use input as a replacement for the placeholder x_input
         out = sess.run(self.model[layer], feed_dict={self.x_input: input})
         return out
