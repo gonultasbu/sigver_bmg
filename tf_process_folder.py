@@ -32,7 +32,7 @@ signatures_path = sys.argv[1]
 save_path = sys.argv[2]
 model_path = sys.argv[3]
 if len(sys.argv) == 4:
-    canvas_size = (1338, 2973)  # Maximum signature size
+    canvas_size = (2078, 3307)  # Maximum signature size
 else:
     canvas_size = (int(sys.argv[4]), int(sys.argv[5]))
 
@@ -46,7 +46,7 @@ person_counter=0
 for root, dirs, filenames in os.walk(signatures_path, topdown=False):
 
     #Only work in directories ending with numbers.
-    if not root[-1].isdigit():
+    if (not root[-1].isdigit()) and not (root == signatures_path):
         continue
 
     # Go to a directory and collect image names in a list.
