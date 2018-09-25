@@ -21,6 +21,7 @@ import numpy as np
 import sys
 import os
 import scipy.io
+from find_largest_image import find_largest
 
 if len(sys.argv) not in [4, 6]:
     print('Usage: python process_folder.py <signatures_path> <save_path> '
@@ -32,7 +33,7 @@ signatures_path = sys.argv[1]
 save_path = sys.argv[2]
 model_path = sys.argv[3]
 if len(sys.argv) == 4:
-    canvas_size = (2078, 3307)  # Maximum signature size
+    canvas_size = find_largest(signatures_path)  # Maximum signature size
 else:
     canvas_size = (int(sys.argv[4]), int(sys.argv[5]))
 
