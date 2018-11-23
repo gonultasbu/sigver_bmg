@@ -9,6 +9,11 @@ wget "https://storage.googleapis.com/luizgh-datasets/models/signet_spp_models.zi
 unzip signet_models.zip
 unzip signet_spp_models.zip
 cd ~/Downloads
+# NVIDIA driver installation
+sudo apt-get purge nvidia*
+sudo add-apt-repository ppa:graphics-drivers
+sudo apt-get update
+sudo apt install nvidia-driver-410
 # TensorFlow installation
 # Adds NVIDIA package repository.
 sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
