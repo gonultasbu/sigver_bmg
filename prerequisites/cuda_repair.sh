@@ -1,17 +1,3 @@
-#!/usr/bin/env bash
-pip install "scipy==0.18.0" "pillow==3.0.0"
-pip install opencv-python
-pip install "Theano==0.9"
-pip install https://github.com/Lasagne/Lasagne/archive/master.zip
-git clone https://github.com/luizgh/sigver_wiwd.git
-cd sigver_wiwd/models
-wget "https://storage.googleapis.com/luizgh-datasets/models/signet_models.zip"
-wget "https://storage.googleapis.com/luizgh-datasets/models/signet_spp_models.zip"
-unzip signet_models.zip
-unzip signet_spp_models.zip
-cd ~/Downloads
-# TensorFlow installation
-# Adds NVIDIA package repository.
 sudo apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
 wget http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-repo-ubuntu1604_9.1.85-1_amd64.deb
 wget http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/nvidia-machine-learning-repo-ubuntu1604_1.0.0-1_amd64.deb

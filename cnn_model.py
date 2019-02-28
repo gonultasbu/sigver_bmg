@@ -58,7 +58,7 @@ class CNNModel:
         return out
 
     def get_feature_vector_multiple(self, images, layer='fc2'):
-        """ Runs forward propagation until a desired layer, for one input image
+        """ Runs forward propagation until a desired layer
 
         Parameters:
             images (numpy.ndarray): The input images. Should have three dimensions:
