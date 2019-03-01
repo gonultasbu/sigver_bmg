@@ -26,14 +26,14 @@ import os
 import scipy.io
 from find_largest_image import find_largest
 import tqdm 
+import dask.dataframe as dd
 
 def tf_process(signatures_path, model_path):
 
-    sig_df = pd.DataFrame()
     canvas_size = [2078, 3307] 
     print('Using model %s' % model_path)
     print('Using canvas size: %s' % (canvas_size,))
-
+    sig_df = pd.DataFrame()
     # Load the model
     model_weight_path = 'models/signet.pkl'
     model = TF_CNNModel(tf_signet, model_weight_path)
@@ -51,13 +51,20 @@ def tf_process(signatures_path, model_path):
         image_ndarray[counter,:,:] = np.expand_dims(
                 preprocess_signature(imread(full_file_name, flatten=True),canvas_size),axis=0)
 
-        
     sess = tf.Session()
     sess.run(tf.global_variables_initializer())
-    feature_vector = model.get_feature_vector_multiple(sess, image_ndarray)
-    filenames = np.expand_dims(filenames,axis=1)
-    sig_df = pd.DataFrame(np.hstack((filenames,feature_vector)))
-    # sig_df = sig_df.append(temp_df, ignore_index=True)
+    image_list = np.array(image_list)
+    image_list = np.expand_dims(image_list,axis=1)
+
+    i_slices = np.split(image_ndarray,500)
+    f_slices = np.split(image_list,500)
+
+    for c_var, nd_slice in enumerate(tqdm.tqdm(i_slices)):
+        feature_vector = model.get_feature_vector_multiple(sess, nd_slice)
+        temp_df = pd.DataFrame(np.hstack((f_slices[c_var],feature_vector)))
+        sig_df = sig_df.append(temp_df, ignore_index=True)
+
+    
 
     sig_df.to_csv(os.path.join(signatures_path,"extracted_features.csv"))
 
