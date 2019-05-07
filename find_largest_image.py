@@ -21,4 +21,4 @@ def find_largest(directory):
     return sizes[::-1]
 
 if (__name__ == "__main__"):
-    find_largest("/home/mert/Desktop/sigver_dataset")
+    find_largest("C:\\Users\\Mert\\Documents\\GitHub\\sigver_bmg\\data\\GPDSSyntheticSignatures4k")

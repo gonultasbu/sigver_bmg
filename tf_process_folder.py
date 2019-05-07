@@ -29,12 +29,12 @@ import tqdm
 
 def tf_process(signatures_path, model_path):
 
-    canvas_size = [2078, 3307] 
+    canvas_size = [1338, 2973] 
     print('Using model %s' % model_path)
     print('Using canvas size: %s' % (canvas_size,))
     sig_df = pd.DataFrame()
     # Load the model
-    model_weight_path = 'models/signet.pkl'
+    model_weight_path = model_path
     model = TF_CNNModel(tf_signet, model_weight_path)
     image_list = list()
     person_list = list()
@@ -45,7 +45,7 @@ def tf_process(signatures_path, model_path):
         for file in filenames:
             if (file.endswith(".jpg")):
                 image_list.append(os.path.join(root,file))
-                person_list.append(int(root.split('/')[-1]))
+                person_list.append(int(root.split('\\')[-1]))
                 sig_num_list.append(int(file.split('-')[2].split('.')[0]))
                 if (file.startswith('cf')) : fakeness_list.append(True)
                 elif (file.startswith('c')) : fakeness_list.append(False)
@@ -85,4 +85,4 @@ def tf_process(signatures_path, model_path):
     sig_d_df.to_csv(os.path.join(signatures_path,"data_features.csv"), index=False) 
     sig_v_df.to_csv(os.path.join(signatures_path,"visual_features.csv"), index=False)
 if (__name__ == "__main__"):
-    tf_process("/home/mert/Desktop/sigver_dataset/GPDSSyntheticSignatures4k/","models/signet.pkl")
+    tf_process("C:\\Users\\Mert\\Documents\\GitHub\\sigver_bmg\\data\\GPDSSyntheticSignatures4k","C:\\Users\\Mert\\Documents\\GitHub\\sigver_bmg\\models\\signet.pkl")
