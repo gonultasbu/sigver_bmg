@@ -16,7 +16,6 @@ def find_largest(directory):
                     sizes[1]=sizes_temp[1]
                 else:
                     pass
-#For the correct ordering
     print ("Max size within dataset is" + str(sizes[::-1]))
     return sizes[::-1]
 
